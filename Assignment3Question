@@ -1,0 +1,326 @@
+Mafia is a popular party game that requires one to think, manipulate, and deceive others in
+order to win. Since the pandemic, it has become rather difficult for people to host parties; hence
+for this assignment, you are required to develop a mafia game simulator. In this assignment,
+
+you must use OOP concepts, especially inheritance and polymorphism, demonstration of object
+comparison, and object equality check.
+Rules of the game:
+Plot: There is a village of N players. A player can be either a commoner, a detective, a healer,
+or a mafia. A commoner only knows that he is a commoner. A detective knows all the other
+detectives. A mafia knows all the other Mafia players. A healer knows all other healers in the
+game.
+Objectives: The objective for the mafias is to kill or eliminate all the non-mafias such that the
+ratio of the alive mafias to all others is 1:1. A player can be eliminated in two ways: 1) By being
+killed by the Mafia or 2) Be eliminated in a vote out. Once a player is eliminated, they cannot be
+brought back to life. Mafias cannot kill themselves.
+The objective for all other players(except the mafias) is to eliminate the mafias through a vote
+out(as the Mafias cannot be killed). Therefore, by using special powers of detectives and
+healers, they are required to save themselves and vote out the Mafias.
+Role of different type of players:
+1. Mafia: To kill all other players to achieve a 1:1 ratio.
+2. Detective: They can randomly test one of the players (except detective) to test whether
+the player is mafia or not. If they correctly identify a mafia, the caught mafia will be voted
+out in that round by default.
+3. Healer: They randomly select a player from the game to give him a boost of 500 HP (All
+players, including mafias and healers themselves).
+4. Commoner: They don’t have any special role. They only take part in the voting process.
+End of Game:
+The game ends when either all mafias are voted out or the ratio of mafias to others becomes
+1:1.
+The Mafia wins in the latter case and loses in the former.
+You need to announce the winners at the end of the game along with the roles of each player.
+In this assignment, you must use OOP concepts, especially the topics on which this
+assignment is based.
+The design/working of the game is as follows:
+[A] On starting the game:
+1) Each invocation of the game will be considered a new game. Hence, no need to create a
+database of users or saving their game. At the beginning of each execution, the user is
+supposed to enter the number N, i.e., the total number of players in the game. The
+
+minimum number of players for the game is 6. If the player enters a number less than 6,
+the program asks for N again. Under no circumstances should your program
+terminate unexpectedly. If any invalid input is given, it should be handled properly
+(explained in test cases).
+2) Then the user is given the option of either choosing their character (Mafia, Commoner,
+Detective, or Healer) on their own or be allotted a character randomly by the program.
+After allocating the user his/her role, there should be N/5 Mafias, N/5 Detectives, max {1,
+N/10} healers, and the remaining players should be commoners. Here, the ‘/’ operator is
+floored division. For example, for N=11, there will be 2 mafias,2 detectives, 1 healer, and
+6 commoners.
+[B] Gameplay
+1) The game will run in rounds. In each round, there will be fixed steps that are followed.
+a) Firstly the Mafias choose to kill a person(other than mafias). If the user is a mafia
+player, then he/she will be asked to choose the target.
+b) Then the detective will test a person to know whether he is mafia or not. If the
+user is a detective player, then he/she will be asked who they want to test.
+c) Then the healer will heal a person by giving him an HP boost as defined in HP
+rules. If the user is a healer player, then he/she will be asked who they want to
+heal.
+d) If after healing, the HP of the person killed by the Mafia reaches 0, the player
+dies.
+e) After this, there is a voting round where each player votes randomly, and the
+user(If alive) votes for whoever he/she wants to vote for. The person with the
+highest votes is kicked out of the game.
+f) However, if the detective tests positive on a mafia, there will be no voting, and
+the caught mafia will be voted out by default. Once a player is out of the game,
+they can not re-enter the game.
+g) If there are no detectives left, there will be no test and/or if there are no healers
+left, there will be no HP boost. The game will keep on moving until we arrive at an
+end of game condition.
+h) If there are multiple mafias then they vote collectively i.e. they decide one player
+to kill. In the same way, all detectives choose one player to test and healers
+choose one player to heal. At no point in time mafias can kill multiple players in a
+single round, or detectives can test multiple players, and/or healers can heal
+multiple players. Although when taking the vote, each player votes independently
+so as to protect his/her identity. [02/10/2020 4:40pm]
+i) In each round, there is fresh voting that takes place. Votes from previous rounds
+are not counted. Only one player is voted out in each round.[02/10/2020 4:40pm]
+j) In case the votes are tied, the voting process is repeated until there is no
+tie.[02/10/2020 4:40pm]
+
+2) HP Rules:
+a) All commoners start with an HP of 1000 each.
+b) All mafias will start with 2500 HP each.
+c) All Detectives and Healers start with an HP of 800 each.
+d) In each Round, Healers can increase any players HP by 500.
+e) When the mafias choose a target, if their combined HP is equal to or more than
+that target's current HP, the target's HP becomes 0. However, if their combined
+HP is less than that targets current HP, the targets HP reduces by the combined
+HP of the mafias.
+f) Further, as damage, each mafias HP will be reduced by X/Y, where X is the initial
+HP of the target(before being killed), and Y is the number of alive mafias whose
+HP is greater than 0. If the target’s HP falls below or equal to 0, the target dies.
+For example, if there are 2 mafias with HP 500 and 1000. Suppose the target has
+an HP of 1000. Then, since the combined HP of mafias (1500) is greater than the
+target's HP, the target dies. And the new HP of the mafias is 0 and 500,
+respectively.
+Note that mafias cannot be killed even if their HP falls to 0. They can only
+be voted out. Please note that HP can not fall below 0 for any player.
+In case, at the time of selection of target, one of the mafias has an HP less than
+X/Y, then this mafia will contribute to the damage by his total HP(making his HP
+to zero), and the remaining Damage will be equally divided. This process is
+continued until all Damage is absorbed, or the HP of all mafias becomes 0. For
+example, if there are two mafias mafia1 and mafia2 with HP 100 and 200
+respectively and they kill a player with HP 250, then the final HP of mafias after
+the kill are 0 and 50.
+g) If the Healer chooses a person who was a target that died in that round itself, the
+target is revived, and the new HP of the target is 500. No one dies in such a
+situation. However, the mafias will still take the damage as explained earlier.
+In other words, the target is chosen first, and then the mafias and target take their
+damages, after which the healer chooses to heal someone. However, the target
+dies if his HP becomes zero and is not chosen by the Healer to heal.
+h) The healer can choose any player(including mafia) for the HP boost that is
+currently playing the game. Players that were killed/voted out in the previous
+rounds don’t participate in any way and hence can’t be chosen in any scenario.
+[02/10/2020 4:40pm]
+
+3) There is only a single-player playing the game. Other players are simulated and need no
+input.
+4) The output should give the details of the game. Several samples of output are shown
+below. Note that the text in red is only there to explain the game state and is not to be
+printed by the program.
+
+The program prints all items in bold, and all unbolded texts are inputs by the user.
+--Sample Input/Output 1 from detective’s perspective-- (We are using 1 indexing)
+Welcome to Mafia
+Enter Number of players: 10
+Choose a Character
+1) Mafia
+2) Detective
+3) Healer
+4) Commoner
+5) Assign Randomly
+2
+You are Player6.
+You are a detective. Other detectives are: [Player5]
+This is a sample game. Let's assume that Player1 and Player8 are mafia. Player5 and
+Player6[User] are Detectives. Player7 is Healer. Rest are Commoners.
+Round 1:
+10 players are remaining: Player1, Player2, Player3, Player4,Player5, Player6, Player7,
+Player8, Player9, Player10 are alive.
+Mafias have chosen their target.
+Choose a player to test: 5
+You cannot test a detective. Choose a player to test: 4
+Player4 is not a mafia.
+Healers have chosen someone to heal.
+--End of actions--
+Player3 has died.
+Select a person to vote out: 2
+Player4 has been voted out.
+2--End of Round 1--
+Now, the remaining members are Player1,2,5,6,7,8,9,10.
+Round 2:
+8 players are remaining: Player1, Player2, Player5, Player6, Player7, Player8, Player9,
+Player10 are alive.
+Mafias have chosen their target.
+Choose a player to test: 1
+Player1 is a mafia.
+Healers have chosen someone to heal.
+--End of actions--
+No one died.
+Mafias selected Player9; however, the Healer chose Player9 as well, therefore new HP for
+Player9 is 500.
+
+Player1 has been voted out.
+Here, since the detective correctly caught the mafia, everyone voted for Player1 by
+default.
+--End of Round 2--
+Round 3:
+7 players are remaining: Player2, Player5, Player6, Player7, Player8, Player9, Player10 are
+alive.
+Mafias have chosen their target.
+Choose a player to test: 2
+Player2 is not a mafia.
+Healers have chosen someone to heal.
+--End of actions--
+Player2 has died.
+Select a person to vote out: 8
+Player8 has been voted out.
+--End of round 3--
+Game Over.
+The Mafias have lost.
+Player1 and Player8 were mafia.
+Player5 and Player6[User] were Detectives.
+Player7 was Healer.
+Player2, Player3, Player4,Player9, Player10 were Commoners.
+--End of Sample Case--
+
+--Sample Input/Output 2 from mafias perspective--
+Welcome to Mafia
+Enter Number of players: 10
+Choose a Character
+1) Mafia
+2) Detective
+3) Healer
+4) Commoner
+5) Assign Randomly
+5
+You are Player9.
+You are a mafia. Other mafias are: [Player1]
+This is a sample game. Let's assume that Player1 and Player9[User] are mafia. Player5
+and Player6 are Detectives. Player7 is Healer. Rest are Commoners.
+Round 1:
+
+10 players are remaining: Player1, Player2, Player3, Player4,Player5, Player6, Player7,
+Player8, Player9, Player10 are alive.
+Choose a target: 6
+Detectives have chosen a player to test.
+Healers have chosen someone to heal.
+--End of actions--
+Player6 has died.
+Select a person to vote out: 5
+Player5 has been voted out.
+--End of Round 1--
+Now, the remaining members are Player1,2,3,4,7,8,9,10.
+Round 2:
+8 players are remaining: Player1, Player2, Player3, Player4, Player7, Player8, Player9,
+Player10 are alive.
+Choose a target: 8
+Detectives have chosen a player to test.
+Even though there are no detectives left, other players will not come to know about this.
+Healers have chosen someone to heal.
+--End of actions--
+Player 8 has died.
+Select a person to vote out: 10
+Player9 has been voted out.
+--End of Round 2--
+Now, even though the user is dead. The game simulates on its own. Without taking any
+inputs from the user.
+Round 3:
+6 players are remaining: Player1, Player2, Player3, Player4, Player7, Player10 are alive.
+Mafias have chosen their target.
+Detectives have chosen a player to test.
+Healers have chosen someone to heal.
+--End of actions--
+Player2 has died.
+Player3 has been voted out.
+--End of round 3--
+Round 4:
+4 players are remaining: Player1, Player4, Player7, Player10 are alive.
+Mafias have chosen their target.
+Detectives have chosen a player to test.
+Healers have chosen someone to heal.
+--End of actions--
+Player4 has died.
+
+Player7 has been voted out.
+--End of round 4--
+Game Over.
+The Mafias have won. Since the ratio of alive mafias to others is 1:1, Mafias win.
+Player1 and Player9[User] were mafias.
+Player5 and Player6 were Detectives.
+Player7 was Healer.
+Player2, Player3, Player4,Player8, Player10 were Commoners.
+--End of Sample Case--
+
+--Sample Input/Output 3 from healers perspective--
+Welcome to Mafia
+Enter Number of players: 10
+Choose a Character
+1) Mafia
+2) Detective
+3) Healer
+4) Commoner
+5) Assign Randomly
+3
+You are Player7.
+You are a healer. Other healers are: []
+Since there are no other healers, the array is empty.
+This is a sample game. Let's assume that Player1 and Player9 are mafia. Player5 and
+Player6 are Detectives. Player7[User] is Healer. Rest are Commoners.
+Round 1:
+10 players are remaining: Player1, Player2, Player3, Player4,Player5, Player6, Player7,
+Player8, Player9, Player10 are alive.
+Mafias have chosen their target.
+Detectives have chosen a player to test.
+Choose a player to heal: 3
+--End of actions--
+Player6 has died.
+Select a person to vote out: 5
+Player5 has been voted out.
+--End of Round 1--
+Now, the remaining members are Player1,2,3,4,7,8,9,10.
+Round 2:
+
+8 players are remaining: Player1, Player2, Player3, Player4, Player7, Player8, Player9,
+Player10 are alive.
+Mafias have chosen their target.
+Detectives have chosen a player to test.
+Even though there are no detectives left, other players will not come to know about this.
+Choose a player to heal: 1
+--End of actions--
+Player 8 has died.
+Select a person to vote out: 10
+Player9 has been voted out.
+--End of Round 2--
+Round 3:
+6 players are remaining: Player1, Player2, Player3, Player4, Player7, Player10 are alive.
+Mafias have chosen their target.
+Detectives have chosen a player to test.
+Choose a player to heal: 9
+Player9 is not in the game.
+Choose a player to heal: 7
+--End of actions--
+Player2 has died.
+Select a person to vote out: 3
+Player3 has been voted out.
+--End of round 3--
+Round 4:
+4 players are remaining: Player1, Player4, Player7, Player10 are alive.
+Mafias have chosen their target.
+Detectives have chosen a player to test.
+Choose a player to heal: 7
+--End of actions--
+Player4 has died.
+Select a person to vote out: 1
+Player7 has been voted out.
+--End of round 4--
+Game Over.
+The Mafias have won. Since the ratio of alive mafias to others is 1:1, Mafias win.
+Player1 and Player9 were mafia.
+Player5 and Player6 were Detectives.
+Player7 was Healer.
+Player2, Player3, Player4,Player8, Player10 were Commoners.
+--End of Sample Case--
+
+[For commoners, only input is the person to be voted out. Other players vote randomly.]
